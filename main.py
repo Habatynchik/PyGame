@@ -1,28 +1,45 @@
+import random
 import pygame
+from fireball import Fireball
 from player import Player
+
+def display_score():
+    ticks = pygame.time.get_ticks() // 100
+    score_font = pygame.font.Font(None, 36)
+    score_text = score_font.render(f"Score: {ticks}", True, (0, 0, 0))
+    score_rect = score_text.get_rect(center=(SCREEN_WIDTH / 2, 10))
+    return score_text, score_rect
+
+pygame.init()
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 
 display_surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-player = Player(3, display_surface)
-
-fireball_surface = pygame.image.load('./images/Fireball/Fireball_1.png').convert_alpha()
-fireball_surface = pygame.transform.scale(fireball_surface, (30, 30))
+player = Player(400, display_surface)
+fireballs = []
+for i in range(13):
+    size = random.randint(50, 100)
+    fireballs.append(Fireball((size, size), display_surface))
 
 game_is_running = True
+clock = pygame.time.Clock()
 
 while game_is_running:
+    display_surface.fill((255, 40, 210))
+    delta_time = clock.tick(60) / 1000
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_is_running = False
-
     keys = pygame.key.get_pressed()
-    player.move(keys)
 
-    display_surface.fill((255, 40, 210))
+    player.move(keys, delta_time)
+
+    for fireball in fireballs:
+        fireball.update(delta_time)
+        display_surface.blit(fireball.rotated, fireball.rect)
+
     display_surface.blit(player.surface, player.rect)
-    display_surface.blit(fireball_surface, (100, 100))
+    display_surface.blit(*display_score())
     pygame.display.update()
-
-pygame.init()
