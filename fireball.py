@@ -1,12 +1,12 @@
 import pygame
 import random
 
-#hello
-
 class Fireball:
     def __init__(self, size, display_surface):
         self.SCREEN_WIDTH = display_surface.get_rect().width
         self.SCREEN_HEIGHT = display_surface.get_rect().height
+        self.damage = self.SCREEN_WIDTH / 100
+        self.size = size
         self.surface = pygame.image.load('./images/Fireball/Fireball_1.png').convert_alpha()
         self.surface = pygame.transform.scale(self.surface, size)
         self.rect = self.surface.get_rect()
@@ -26,3 +26,8 @@ class Fireball:
             self.speed = random.randint(150, 400)
             self.direction = pygame.Vector2(random.uniform(-0.5, 0.5), 1)
             self.rect.left = random.randint(0, self.SCREEN_WIDTH)
+
+    def explosion(self):
+        self.surface = pygame.image.load('./images/Fireball/explosion.gif').convert_alpha()
+        self.surface = pygame.transform.scale(self.surface, self.size)
+        self.speed = 0

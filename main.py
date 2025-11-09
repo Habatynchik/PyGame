@@ -39,7 +39,11 @@ while game_is_running:
     for fireball in fireballs:
         fireball.update(delta_time)
         display_surface.blit(fireball.rotated, fireball.rect)
+        if player.check_collision(fireball):
+            player.receive_damage(fireball)
+            fireball.explosion()
 
+    player.display_hp()
     display_surface.blit(player.surface, player.rect)
     display_surface.blit(*display_score())
     pygame.display.update()

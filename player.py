@@ -1,11 +1,11 @@
 import random
-
 import pygame
+from fireball import Fireball
 
 class Player:
     def __init__(self, speed, display_surface):
         self.prev_direction = None
-        self.hp = 100
+        self.hp = display_surface.get_rect().width
         self.size = (100, 100)
         self.speed = speed
         self.display_surface = display_surface
@@ -34,6 +34,16 @@ class Player:
         if self.direction and self.footstep_time + 200 < pygame.time.get_ticks():
             self.footstep_sound.play()
             self.footstep_time = pygame.time.get_ticks()
+
+    def display_hp(self):
+        pygame.draw.rect(self.display_surface, (255, 0, 0), pygame.Rect(0, 0, self.hp, 25))
+
+    def check_collision(self, fireball_obj: Fireball):
+        return self.rect.colliderect(fireball_obj.rect)
+
+    def receive_damage(self, fireball_obj: Fireball):
+
+        self.hp -= fireball_obj.damage
 
     def move(self, key, delta_time):
         #When we move out of bounds, we return to the other side.
