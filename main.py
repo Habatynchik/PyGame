@@ -2,6 +2,8 @@ import random
 import pygame
 from fireball import Fireball
 from player import Player
+from waterball import WaterBall
+
 
 def display_score():
     ticks = pygame.time.get_ticks() // 100
@@ -17,6 +19,7 @@ SCREEN_HEIGHT = 800
 
 display_surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 player = Player(400, display_surface)
+waterballs = []
 fireballs = []
 for i in range(13):
     size = random.randint(50, 100)
@@ -32,6 +35,10 @@ while game_is_running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_is_running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            waterballs.append(WaterBall(player.rect.center))
+
     keys = pygame.key.get_pressed()
 
     player.move(keys, delta_time)
@@ -42,6 +49,13 @@ while game_is_running:
         if player.check_collision(fireball):
             player.receive_damage(fireball)
             fireball.explosion()
+
+    for waterball in waterballs:
+        display_surface.blit(waterball.surface, waterball.rect)
+        for fireball in fireballs:
+            if fireball.rect.colliderect(waterball.rect):
+                fireball.generate_new_pos()
+                waterballs.remove(waterball)
 
     player.display_hp()
     display_surface.blit(player.surface, player.rect)
