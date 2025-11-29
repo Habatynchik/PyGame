@@ -37,6 +37,7 @@ while game_is_running:
             game_is_running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            
             waterballs.append(WaterBall(player.rect.center))
 
     keys = pygame.key.get_pressed()
@@ -51,6 +52,7 @@ while game_is_running:
             fireball.explosion()
 
     for waterball in waterballs:
+        waterball.update(delta_time)
         display_surface.blit(waterball.surface, waterball.rect)
         for fireball in fireballs:
             if fireball.rect.colliderect(waterball.rect):
